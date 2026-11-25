@@ -30,6 +30,7 @@ Updates are delivered automatically via [Sparkle](https://sparkle-project.org)
   reference the results of previous lines.
 - **Variables** — `price = 49.99`, then `tax on price`, `price off 10%`, etc.
   Variable names are case-insensitive (`Price` = `price`).
+- **Scientific notation input** — `1e3`, `2.5E-4`, and `1e+6` work in calculations.
 - **Units** — length, mass, temperature, speed, data, and more
   (`5 km in miles`, `100 lb in kg`).
 - **Currency** — live FX rates from [frankfurter.app](https://frankfurter.app)

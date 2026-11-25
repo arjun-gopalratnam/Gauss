@@ -44,6 +44,15 @@ final class ArithmeticTests: XCTestCase {
         XCTAssertEqual(eval("10 / 4"), .number(2.5))
     }
 
+    func testScientificNotationArithmetic() {
+        XCTAssertEqual(eval("1e3 + 2E2"), .number(1200))
+        XCTAssertEqual(eval("2.5E-4 * 4"), .number(0.001))
+        XCTAssertEqual(eval("-1e+3 / 2"), .number(-500))
+        XCTAssertEqual(eval("1e-3 + 1"), .number(1.001))
+        XCTAssertEqual(eval("$1e2 + $5"), .currency(105, "USD"))
+        XCTAssertEqual(eval("1e2% of 5"), .number(5))
+    }
+
     func testPower() {
         XCTAssertEqual(eval("2 ^ 10"), .number(1024))
     }

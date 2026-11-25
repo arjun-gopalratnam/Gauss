@@ -346,6 +346,24 @@ public struct Tokenizer {
                 }
             }
         }
+        // Only consume an exponent when it has digits after the optional sign.
+        // Leave incomplete input and identifiers such as EUR for normal tokenization.
+        if !str.isEmpty, idx < scalars.count,
+           scalars[idx] == "e" || scalars[idx] == "E" {
+            var exponentEnd = idx + 1
+            if exponentEnd < scalars.count,
+               scalars[exponentEnd] == "+" || scalars[exponentEnd] == "-" {
+                exponentEnd += 1
+            }
+            let digitsStart = exponentEnd
+            while exponentEnd < scalars.count && isDigit(scalars[exponentEnd]) {
+                exponentEnd += 1
+            }
+            if exponentEnd > digitsStart {
+                str += String(String.UnicodeScalarView(scalars[idx..<exponentEnd]))
+                idx = exponentEnd
+            }
+        }
         guard !str.isEmpty, let value = Double(str) else {
             return (nil, start)
         }
