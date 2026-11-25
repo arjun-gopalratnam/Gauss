@@ -49,6 +49,35 @@ final class TokenizerTests: XCTestCase {
         XCTAssertEqual(tokens("3 * 4"), [.number(3), .op(.multiply), .number(4)])
     }
 
+    func testScientificNotation() {
+        for (input, expected) in [("1e3", 1000.0), ("2.5E-4", 0.00025), ("1e+6", 1_000_000.0), ("3E0", 3.0)] {
+            XCTAssertEqual(tokens(input), [.number(expected)], input)
+        }
+    }
+
+    func testScientificNotationWithMultipleExponentDigits() {
+        XCTAssertEqual(tokens("1e12"), [.number(1_000_000_000_000)])
+        XCTAssertEqual(tokens("2E+12"), [.number(2_000_000_000_000)])
+        XCTAssertEqual(tokens("2.5e-12"), [.number(0.0000000000025)])
+        XCTAssertEqual(tokens("1e12 + 5"), [.number(1_000_000_000_000), .op(.add), .number(5)])
+    }
+
+    func testScientificNotationWithSuffixes() {
+        XCTAssertEqual(tokens("$2.5e2"), [.currency(250, "USD")])
+        XCTAssertEqual(tokens("1e2%"), [.percentage(100)])
+        XCTAssertEqual(tokens("1e3k"), [.number(1_000_000)])
+        XCTAssertEqual(tokens("1e3 EUR"), [.number(1000), .identifier("EUR")])
+    }
+
+    func testIncompleteExponentPreservesFollowingTokens() {
+        XCTAssertEqual(tokens("1e"), [.number(1), .identifier("e")])
+        XCTAssertEqual(tokens("1e+"), [.number(1), .identifier("e"), .op(.add)])
+        XCTAssertEqual(tokens("1e-"), [.number(1), .identifier("e"), .op(.subtract)])
+        XCTAssertEqual(tokens("1e+ 3"), [.number(1), .identifier("e"), .op(.add), .number(3)])
+        XCTAssertEqual(tokens("1EUR"), [.number(1), .identifier("EUR")])
+        XCTAssertEqual(tokens("$e3"), [.identifier("$"), .identifier("e3")])
+    }
+
     func testDivision() {
         XCTAssertEqual(tokens("10 / 3"), [.number(10), .op(.divide), .number(3)])
     }
