@@ -51,6 +51,13 @@ final class TokenizerTests: XCTestCase {
         }
     }
 
+    func testScientificNotationWithMultipleExponentDigits() {
+        XCTAssertEqual(tokens("1e12"), [.number(1_000_000_000_000)])
+        XCTAssertEqual(tokens("2E+12"), [.number(2_000_000_000_000)])
+        XCTAssertEqual(tokens("2.5e-12"), [.number(0.0000000000025)])
+        XCTAssertEqual(tokens("1e12 + 5"), [.number(1_000_000_000_000), .op(.add), .number(5)])
+    }
+
     func testScientificNotationWithSuffixes() {
         XCTAssertEqual(tokens("$2.5e2"), [.currency(250, "USD")])
         XCTAssertEqual(tokens("1e2%"), [.percentage(100)])

@@ -53,6 +53,11 @@ final class ArithmeticTests: XCTestCase {
         XCTAssertEqual(eval("1e2% of 5"), .number(5))
     }
 
+    func testScientificNotationWithMultipleExponentDigits() {
+        XCTAssertEqual(eval("1e12 + 2E+11"), .number(1_200_000_000_000))
+        XCTAssertEqual(eval("2.5e-12 * 1e12"), .number(2.5))
+    }
+
     func testPower() {
         XCTAssertEqual(eval("2 ^ 10"), .number(1024))
     }
